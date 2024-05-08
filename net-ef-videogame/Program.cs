@@ -8,10 +8,10 @@
                 // Creazione di una nuova software house
                 SoftwareHouse softwareHouse = new SoftwareHouse()
                 {
-                    Name = "Giochi Brutti",
-                    TaxId = "Tax ID 123",
-                    City = "Città del Vaticano",
-                    Country = "Coutry House",
+                    Name = "Giochi Brutti2",
+                    TaxId = "Tax ID 1233",
+                    City = "Città del Vaticano2",
+                    Country = "Coutry House2",
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
