@@ -9,111 +9,64 @@ namespace net_ef_videogame
 {
     public static class VideogameManager
     {
-        //static string connectionString = "Data Source=localhost;Initial Catalog=adonet-db-videogame;Integrated Security=True";
-        //public static void InsertVideogame(string name, string overview)
-        //{
-        //    using SqlConnection sqlConnection = new SqlConnection(connectionString);
+        public static void InsertVideogame(string name, string overview)
+        {
+            using (var context = new VideogameContext()) 
+            {
+                try
+                {
+                    var newVideogame = new Videogame
+                    {
+                        Name = name,
+                        Overview = overview,
+                        ReleaseDate = new DateTime(1985, 1, 1),
+                        CreatedAt = new DateTime(1985, 1, 1),
+                        UpdatedAt = new DateTime(2002, 1, 1),
+                        SoftwareHouseId = 1 // Sostituisci con l'ID effettivo della software house
+                    };
 
-        //    try
-        //    {
-        //        sqlConnection.Open();
+                    context.Videogames.Add(newVideogame);
+                    context.SaveChanges();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.ToString());
+                }
+            }
+        }
 
-        //        string query = "INSERT INTO videogames (name, overview, release_date, created_at, updated_at, software_house_id) VALUES (@name, @overview, @release_date, @created_at, @updated_at, @software_house_id)";
+        public static Videogame GetVideogameById(int id)
+        {
+            using (var context = new VideogameContext()) 
+            {
+                return context.Videogames.FirstOrDefault(v => v.Id == id);
+            }
+        }
 
-        //        using SqlCommand cmd = new SqlCommand(query, sqlConnection);
-        //        {
-        //            cmd.Parameters.Add(new SqlParameter("@name", name));
-        //            cmd.Parameters.Add(new SqlParameter("@overview", overview));
-        //            cmd.Parameters.Add(new SqlParameter("@release_date", "1985-01-01"));
-        //            cmd.Parameters.Add(new SqlParameter("@created_at", "1985-01-01"));
-        //            cmd.Parameters.Add(new SqlParameter("@updated_at", "2002-01-01"));
-        //            cmd.Parameters.Add(new SqlParameter("@software_house_id", "1"));
+        public static List<Videogame> SearchGamesByName(string searchName)
+        {
+            using (var context = new VideogameContext()) 
+            {
+                return context.Videogames.Where(v => v.Name.Contains(searchName)).ToList();
+            }
+        }
 
-        //            int affectedRows = cmd.ExecuteNonQuery();
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        Console.WriteLine(ex.ToString());
-        //    }
-        //}
-        //public static Videogame GetVideogameById(int id)
-        //{
-        //    string query = "SELECT * FROM videogames WHERE id = @id";
-        //    using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-        //    {
-        //        sqlConnection.Open();
-        //        SqlCommand cmd = new SqlCommand(query, sqlConnection);
-        //        cmd.Parameters.AddWithValue("@id", id);
-
-        //        SqlDataReader reader = cmd.ExecuteReader();
-        //        if (reader.Read())
-        //        {
-        //            return new Videogame(
-        //                reader["name"].ToString(),
-        //                reader["overview"].ToString(),
-        //                Convert.ToDateTime(reader["release_date"]),
-        //                Convert.ToDateTime(reader["created_at"]),
-        //                Convert.ToDateTime(reader["updated_at"]),
-        //                (long)reader["software_house_id"]
-        //            );
-        //        }
-        //    }
-        //    return null;
-        //}
-        //public static List<Videogame> SearchGamesByName(string searchName)
-        //{
-        //    List<Videogame> games = new List<Videogame>();
-
-        //    string query = "SELECT * FROM videogames WHERE name LIKE @searchName";
-        //    using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-        //    {
-        //        sqlConnection.Open();
-        //        SqlCommand cmd = new SqlCommand(query, sqlConnection);
-        //        cmd.Parameters.AddWithValue("@searchName", "%" + searchName + "%");
-
-        //        SqlDataReader reader = cmd.ExecuteReader();
-        //        while (reader.Read())
-        //        {
-        //            Videogame game = new Videogame(
-        //                reader["name"].ToString(),
-        //                reader["overview"].ToString(),
-        //                Convert.ToDateTime(reader["release_date"]),
-        //                Convert.ToDateTime(reader["created_at"]),
-        //                Convert.ToDateTime(reader["updated_at"]),
-        //                (long)reader["software_house_id"]
-        //            );
-        //            games.Add(game);
-        //        }
-        //    }
-        //    return games;
-        //}
-        //public static void DeleteVideogame(int id)
-        //{
-        //    string query = "DELETE FROM videogames WHERE id = @id";
-        //    using (SqlConnection sqlConnection = new SqlConnection(connectionString))
-        //    {
-        //        try
-        //        {
-        //            sqlConnection.Open();
-        //            SqlCommand cmd = new SqlCommand(query, sqlConnection);
-        //            cmd.Parameters.AddWithValue("@id", id);
-
-        //            int affectedRows = cmd.ExecuteNonQuery();
-        //            if (affectedRows == 0)
-        //            {
-        //                Console.WriteLine("No videogames found with this Id.");
-        //            }
-        //            else
-        //            {
-        //                Console.WriteLine("Videogame successfully deleted.");
-        //            }
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            Console.WriteLine("An error occured: " + ex.Message);
-        //        }
-        //    }
-        //}
+        public static void DeleteVideogame(int id)
+        {
+            using (var context = new VideogameContext()) 
+            {
+                var videogame = context.Videogames.FirstOrDefault(v => v.Id == id);
+                if (videogame != null)
+                {
+                    context.Videogames.Remove(videogame);
+                    context.SaveChanges();
+                    Console.WriteLine("Videogame successfully deleted.");
+                }
+                else
+                {
+                    Console.WriteLine("No videogames found with this Id.");
+                }
+            }
+        }
     }
 }
